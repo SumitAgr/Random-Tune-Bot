@@ -1,22 +1,29 @@
+# Reddit PRAW library
 import praw
 from praw.exceptions import APIException
 import prawcore
 
+# Twitter Python wrapper
 import tweepy
 
+# Config file
 import config
 
-import schedule
+# Importing time library
 import time
 
+# Random library
 import random
 
+# Adding twitter developer credentials
 auth = tweepy.OAuthHandler(config.TWITTER_CONSUMER_KEY, config.TWITTER_CONSUMER_SECRET)
 auth.set_access_token(config.TWITTER_ACCESS_TOKEN, config.TWITTER_ACCESS_TOKEN_SECRET)
 
+# Authenticating twitter
 api = tweepy.API(auth)
 print("Logged into Twitter")
 
+# Adding reddit developer credentials
 def bot_login():
     bot_login_info = praw.Reddit(username = config.REDDIT_USERNAME,
                 password = config.REDDIT_PASSWORD,
@@ -28,6 +35,7 @@ def bot_login():
     
     return bot_login_info
 
+# Txt file to store random tunes that the bot has tweeted
 def get_randomtune_list():
     with open("posted_tunes.txt", "r") as file:
         posted_tunes = file.read()
@@ -35,8 +43,11 @@ def get_randomtune_list():
     
     return posted_tunes
 
+# Initializing a variable
 random_tune_file = get_randomtune_list()
 
+# Main function to get the random tune from reddit submissions and then filtering youtube URLs. 
+# Also checks if the tune has been posted and if it has, randomizes the list until new random tune 
 def get_random_tune(bot_login_info):
     list_of_submissions = []
     
@@ -50,34 +61,24 @@ def get_random_tune(bot_login_info):
     
     tune_randomizer = random.choice(list_of_submissions)
     
-    print(time.strftime("%c"))
-    print(f"Posting to Twitter - {tune_randomizer}")
-    api.update_status(f"{time.strftime('%c')} \n {tune_randomizer}")
+    with open("posted_tunes.txt", "a") as file:
+        file.write(tune_randomizer + "\n")
 
-    return tune_randomizer
-
-    # with open("posted_tunes.txt", "a") as file:
-    #     file.write(tune_randomizer + "\n")
-
-    # if tune_randomizer in random_tune_file:
-    #     new_random_tune = random.choice(list_of_submissions)
+    if tune_randomizer in random_tune_file:
+        new_random_tune = random.choice(list_of_submissions)
         
-    #     with open("posted_tunes.txt", "a") as file:
-    #         file.write(new_random_tune + "\n")
+        with open("posted_tunes.txt", "a") as file:
+            file.write(new_random_tune + "\n")
         
-    #     return new_random_tune
-    # else:
-    #     return tune_randomizer
+        print(time.strftime("%c"))
+        print(f"Posting to Twitter - {new_random_tune}")
+        api.update_status(f"{time.strftime('Here is your random tune for %A! The current time is %X')} \n {new_random_tune}")
+    else:
+        print(time.strftime("%c"))
+        print(f"Posting to Twitter - {tune_randomizer}")
+        api.update_status(f"{time.strftime('Here is your random tune for %A! The current time is %X')} \n {tune_randomizer}")
 
-# random_tune = get_random_tune(bot_login())
-
-# def post_to_twitter():
-#     print(time.strftime("%c"))
-#     print(f"Posting to Twitter - {random_tune}")
-#     api.update_status(f"{time.strftime('%c')} \n {random_tune}")
-
-# schedule.every(1).minutes.do(post_to_twitter)
-
+# While loop to continuously run the function every 4 hours
 while (True):
     get_random_tune(bot_login())
-    time.sleep(60)
+    time.sleep(14400)
