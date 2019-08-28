@@ -9,11 +9,12 @@ import tweepy
 # Config file
 import config
 
-# Importing time library
+# Importing time libraries
 import time
 from datetime import datetime
 from pytz import timezone
 
+# Adding US East timezone
 est_timezone = timezone('US/Eastern')
 
 # Random library
