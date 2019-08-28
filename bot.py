@@ -11,6 +11,10 @@ import config
 
 # Importing time library
 import time
+from datetime import datetime
+from pytz import timezone
+
+est_timezone = timezone('US/Eastern')
 
 # Random library
 import random
@@ -68,10 +72,11 @@ def get_random_tune(bot_login_info):
 
             db.insert({'tune': tune_randomizer_variable})
 
-            print(time.strftime("%c"))
+            est_time = datetime.now(est_timezone)
+            print(est_time.strftime("%c"))
             print(f"Posting to Twitter - {tune_randomizer_variable}")
             
-            api.update_status(f"{time.strftime('Here is your random tune for %A! The current time is %X')} \n {tune_randomizer_variable}")
+            api.update_status(f"{est_time.strftime('Here is your random tune for %A! The current time is %X')} \n {tune_randomizer_variable}")
 
             never_used = True
 
