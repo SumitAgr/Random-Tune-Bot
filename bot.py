@@ -77,7 +77,6 @@ def get_random_tune(bot_login_info):
 
             if never_used:
                 continue
-
         else:
             pass
 
