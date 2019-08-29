@@ -32,6 +32,8 @@ auth.set_access_token(config.TWITTER_ACCESS_TOKEN, config.TWITTER_ACCESS_TOKEN_S
 api = tweepy.API(auth)
 print("Logged into Twitter")
 
+hashtags = ['#music', '#song', '#randomtune', '#randomsong', '#vibes']
+
 # Adding reddit developer credentials
 def bot_login():
     bot_login_info = praw.Reddit(username = config.REDDIT_USERNAME,
@@ -76,8 +78,10 @@ def get_random_tune(bot_login_info):
             est_time = datetime.now(est_timezone)
             print(est_time.strftime("%c"))
             print(f"Posting to Twitter - {tune_randomizer_variable}")
+
+            random.shuffle(hashtags)
             
-            api.update_status(f"{est_time.strftime('Here is your random tune for %A! The current time is %X')} \n {tune_randomizer_variable}")
+            api.update_status(f"{est_time.strftime('Here is your random tune for %A! The current time is %X')} \n {hashtags[0]} {hashtags[1]} {hashtags[2]} {hashtags[3]} {hashtags[4]} \n {tune_randomizer_variable}")
 
             never_used = True
 
