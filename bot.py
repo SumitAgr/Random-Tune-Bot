@@ -92,6 +92,10 @@ def get_random_tune(bot_login_info):
 
 # While loop to continuously run the function every 4 hours
 while (True):
-    get_random_tune(bot_login())
-    print("Sleeping for 4 hours!")
-    time.sleep(14400)
+    try:
+        get_random_tune(bot_login())
+        print("Sleeping for 4 hours!")
+        time.sleep(14400)
+    except tweepy.TweepError as e:
+        print(f"Error occured when sending tweet: {e}")
+        time.sleep(20)
